@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# This script starts the 4-to_infinity_and_beyond process
+
+# Run the 4-to_infinity_and_beyond script in the background
+./4-to_infinity_and_beyond &
+
+# Keep this script running to prevent the 4-to_infinity_and_beyond process from terminating
+read -r -p "Press Enter to stop the 4-to_infinity_and_beyond process."
