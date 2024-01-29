@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-# This script stops the 7-highlander process when receiving a SIGTERM signal
+# This script displays
+# to infinity and beyond indefinitely
+# With a sleep 2 in between each iteration
+# I am invincible!!! when receiving a SIGTERM signal
 
-# Get the PID of the 7-highlander process
-pid=$(pgrep -f "7-highlander")
-
-# Check if the process is running
-if [ -n "$pid" ]; then
-    # Send a termination signal to the process
-    kill -TERM "$pid"
-else
-    echo "Process not found"
-fi
+trap 'echo "I am invincible!!!"' 15
+while true; do
+    echo "to infinity and beyond"
+    sleep 2
+done
