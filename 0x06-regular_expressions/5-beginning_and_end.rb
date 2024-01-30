@@ -1,4 +1,2 @@
 #!/usr/bin/env ruby
-
-# Check if the argument matches the regular expression
-puts ARGV[0].match(/^h.n$/).join
+puts ARGV[0].scan(/^h.n$/).join
