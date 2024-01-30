@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+# Check if the argument matches the regular expression
+result = ARGV[0].scan(/School/)
