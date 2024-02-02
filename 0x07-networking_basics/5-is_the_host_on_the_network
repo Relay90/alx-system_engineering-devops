@@ -2,8 +2,13 @@
 # This script checks if an IP address is provided
 
 # Check if an argument is provided
-if [ $# -ne 1 ]; then
+if [ $# -eq 0 ]; then
   echo "Usage: $0 {IP_ADDRESS}"
-else
-	ping -c 5 "$ip_address"
+  exit 1
+fi
 
+# Extract the IP address from the command line argument
+ip_address=$1
+
+# Perform ping with 5 attempts
+ping -c 5 "$ip_address"
