@@ -1,9 +1,21 @@
 #!/usr/bin/env bash
-# Install nginx on web server; Nginx should be listening on port 80
 
+# Description: Bash script to install Nginx on a web server and configure it to return "Hello World!" at the root URL
+
+# Update package index
 sudo apt-get -y update
+
+# Install Nginx
 sudo apt-get -y install nginx
+
+# Allow HTTP traffic through the firewall
 sudo ufw allow "Nginx HTTP"
-sudo chown -R $USER:$USER /var/www/html/index.nginx-debian.html
-sudo echo "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# Ensure the HTML directory has correct permissions
+sudo chown -R $USER:$USER /var/www/html/
+
+# Create and populate the index file with "Hello World!"
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Restart Nginx to apply changes
 sudo service nginx restart
