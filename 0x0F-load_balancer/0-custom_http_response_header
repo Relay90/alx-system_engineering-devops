@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# configures an Ubuntu machine with nginx
+# Configures an Ubuntu machine with nginx and custom HTTP response headers
+
 FILE="/etc/nginx/sites-available/default"
 ERRORFILE="/usr/share/nginx/html/404error.html"
 
@@ -10,14 +11,25 @@ CUSTOMHEADER='\n\tadd_header X-Served-By $hostname;\n'
 STRING="Hello World!"
 FOUR="Ceci n'est pas une page"
 
+# Update packages and install nginx
 apt-get -y update
 apt-get -y install nginx
+
+# Allow HTTP traffic through the firewall
 ufw allow 'Nginx HTTP'
+
+# Create index page with content
 echo "$STRING" > /var/www/html/index.nginx-debian.html
+
+# Add redirection configuration
 sed -i "37i\ $REDIRECT" "$FILE"
 
+# Add custom error page configuration
 echo "$FOUR" > "$ERRORFILE"
 sed -i "37i\ $ERRORREDIRECT" "$FILE"
 
+# Add custom header configuration
 sed -i "37i\ $CUSTOMHEADER" "$FILE"
+
+# Restart nginx service to apply changes
 service nginx restart

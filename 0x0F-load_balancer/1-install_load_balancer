@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Configures a new HAproxy as a load balancer
+# Configures a new HAproxy as a load balancer for web servers web-01 and web-02
 
 # Exit script if any command fails
 set -e
@@ -19,8 +19,8 @@ frontend sammykingx.tech
 
 backend web_servers
         balance roundrobin
-        server 64820-web-01 100.26.152.157:80
-        server 64820-web-02 52.86.102.6:80
+        server web-01 100.26.152.157:80
+        server web-02 52.86.102.6:80
 EOF
 
 # Restart HAProxy service using systemctl
