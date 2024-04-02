@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Script to configure Nginx to listen on port 80
+
+# Step 1: Check Nginx configuration files
+nginx_config="/etc/nginx/nginx.conf"
+if [[ ! -f "$nginx_config" ]]; then
+    echo "Nginx configuration file not found: $nginx_config"
+    exit 1
+fi
+
+# Step 2: Ensure Nginx service is running
+if ! systemctl is-active --quiet nginx; then
+    systemctl start nginx
+fi
+
+# Step 3: Verify if Nginx is listening on port 80
+if ! ss -tln | grep -q ":80 "; then
+    echo "Nginx is not listening on port 80"
+    echo "Configuring Nginx to listen on port 80..."
+    sed -i 's/\(listen \[::\]:\|listen \):[0-9]\+;/listen 80;/' "$nginx_config"
+    systemctl restart nginx
+    echo "Nginx now listens on port 80"
+else
+    echo "Nginx is already listening on port 80"
+fi
