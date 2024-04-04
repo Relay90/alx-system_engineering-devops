@@ -1,38 +1,18 @@
 #!/usr/bin/env bash
-# This script displays information about subdomains of a domain
+# script that will display information about subdomains
 
-# Function to get information for a specific subdomain
-get_subdomain_info() {
-    sub_domain="$1"
-    dig_output=$(dig "$sub_domain.$domain" | awk '/^;; ANSWER SECTION:$/,/^$/{if (/^[^;]/) print $NF}')
-    record_type=$(echo "$dig_output" | awk 'NR==1')
-    destination=$(echo "$dig_output" | awk 'NR==2')
-    echo "The subdomain $sub_domain is a $record_type record and points to $destination"
+domain_info () {
+    line=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+    echo "$2 $line" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-# Main function to handle domain and subdomain information
-main() {
-    domain="$1"
-    sub_domain="$2"
-
-    if [ -z "$sub_domain" ]; then
-        # Display information for default subdomains
-        default_subdomains=("www" "lb-01" "web-01" "web-02")
-        for sub_domain in "${default_subdomains[@]}"; do
-            get_subdomain_info "$sub_domain"
-        done
-    else
-        # Display information for specified subdomain
-        get_subdomain_info "$sub_domain"
-    fi
-}
-
-# Check if domain and subdomain parameters are provided
-if [ "$#" -eq 1 ]; then
-    main "$1"
-elif [ "$#" -eq 2 ]; then
-    main "$1" "$2"
-else
-    echo "Usage: $0 <domain> [subdomain]"
-    exit 1
+if [ "$#" == 1 ]
+then
+    domain_info "$1" "www"
+    domain_info "$1" "lb-01"
+    domain_info "$1" "web-01"
+    domain_info "$1" "web-02"
+elif [ "$#" == 2 ]
+then
+    domain_info "$1" "$2"
 fi
