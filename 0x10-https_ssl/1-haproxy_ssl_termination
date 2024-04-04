@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# This script installs Certbot, generates a certificate using Certbot for the specified domain,
+# and restarts HAProxy with the provided configuration.
+
+# Update package lists
+sudo apt-get update
+
+# Install Certbot
+sudo apt-get install -y certbot
+
+# Generate SSL certificate using Certbot for www.example.com
+sudo certbot certonly --standalone -d www.example.com
+
+# HAProxy configuration
+haproxy_config="/etc/haproxy/haproxy.cfg"
+
+# Define HAProxy configuration
+haproxy_config_content=$(cat <<EOF
+global
+    ssl-default-bind-ciphers TLS13-AES-256-GCM-SHA384:TLS13-CHACHA20-POLY1305-SHA256:TLS_AES_128_GCM_SHA256
+    ssl-default-bind-options no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+
+defaults
+    mode http
+    timeout connect 5s
+    timeout client 50s
+    timeout server 50s
+
+frontend https
+    bind *:443 ssl crt /etc/letsencrypt/live/www.example.com/fullchain.pem
+    default_backend backend_servers
+
+backend backend_servers
+    balance roundrobin
+    option httpchk GET / HTTP/1.1\r\nHost:\ www.example.com
+    server web-01 52.87.219.241:80 check
+    server web-02 54.242.162.151:80 check
+EOF
+)
+
+# Write HAProxy configuration to file
+echo "$haproxy_config_content" | sudo tee "$haproxy_config" > /dev/null
+
+# Restart HAProxy
+sudo service haproxy restart
