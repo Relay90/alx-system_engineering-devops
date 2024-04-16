@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Script to set up database and table for replication on web-01 server
+
+# Function to create database and table
+create_database_and_table() {
+    local server_ip=$1
+    local password=$2
+
+    # Connect to MySQL server and create database and table
+    ssh ubuntu@"$server_ip" << EOF
+    mysql -e "CREATE DATABASE IF NOT EXISTS tyrell_corp;"
+    mysql -e "USE tyrell_corp; CREATE TABLE IF NOT EXISTS nexus6 (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));"
+    mysql -e "USE tyrell_corp; INSERT INTO nexus6 (name) VALUES ('Leon');"
+    mysql -e "GRANT SELECT ON tyrell_corp.nexus6 TO 'holberton_user'@'localhost';"
+EOF
+}
+
+# Web-01 server
+create_database_and_table 100.25.165.248 "projectcorrection280hbtn"

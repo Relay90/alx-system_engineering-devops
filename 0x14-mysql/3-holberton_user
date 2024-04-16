@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Script to create a new user for replica synchronization on web-01 server
+
+# Function to create replica user
+create_replica_user() {
+    local server_ip=$1
+    local password=$2
+
+    # Connect to MySQL server and create replica user
+    ssh ubuntu@"$server_ip" << EOF
+    mysql -e "CREATE USER 'replica_user'@'%' IDENTIFIED BY '$password';"
+    mysql -e "GRANT REPLICATION SLAVE ON *.* TO 'replica_user'@'%';"
+    mysql -e "FLUSH PRIVILEGES;"
+EOF
+}
+
+# Web-01 server
+create_replica_user 100.25.165.248 "your_replica_user_password_here"

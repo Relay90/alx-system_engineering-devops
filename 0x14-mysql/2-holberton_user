@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Script to create MySQL user for replication status checking on web-01 and web-02 servers
+
+# Function to create MySQL user
+create_mysql_user() {
+    local server_ip=$1
+    local password=$2
+
+    # Connect to MySQL server and create user
+    ssh ubuntu@"$server_ip" << EOF
+    mysql -e "CREATE USER 'holberton_user'@'localhost' IDENTIFIED BY '$password';"
+    mysql -e "GRANT REPLICATION CLIENT ON *.* TO 'holberton_user'@'localhost';"
+EOF
+}
+
+# Web-01 server
+create_mysql_user 100.25.165.248 "projectcorrection280hbtn"
+
+# Web-02 server
+create_mysql_user 54.210.196.54 "projectcorrection280hbtn"
